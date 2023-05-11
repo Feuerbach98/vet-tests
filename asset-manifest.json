@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/vet-tests/static/css/main.d977c1c9.css",
-    "main.js": "/vet-tests/static/js/main.632e42f5.js",
+    "main.css": "/vet-tests/static/css/main.6c133401.css",
+    "main.js": "/vet-tests/static/js/main.a0f801f6.js",
     "static/js/787.fceee29f.chunk.js": "/vet-tests/static/js/787.fceee29f.chunk.js",
     "index.html": "/vet-tests/index.html",
-    "main.d977c1c9.css.map": "/vet-tests/static/css/main.d977c1c9.css.map",
-    "main.632e42f5.js.map": "/vet-tests/static/js/main.632e42f5.js.map",
+    "main.6c133401.css.map": "/vet-tests/static/css/main.6c133401.css.map",
+    "main.a0f801f6.js.map": "/vet-tests/static/js/main.a0f801f6.js.map",
     "787.fceee29f.chunk.js.map": "/vet-tests/static/js/787.fceee29f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d977c1c9.css",
-    "static/js/main.632e42f5.js"
+    "static/css/main.6c133401.css",
+    "static/js/main.a0f801f6.js"
   ]
 }
