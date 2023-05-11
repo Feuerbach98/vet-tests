@@ -1,14 +1,18 @@
 import './App.css';
 import {text} from "./text";
 import {useEffect, useState} from "react";
+import {text2} from "./text2";
 
 const obj = [];
 
 (function parseData() {
-  let newText = text.split("Завдання №").filter((el) => el !== "" && el !== "\n");
-  newText.forEach((el) => {
+  let newText = text.concat(text2)
+    .split("Завдання №")
+    .filter((el) => el !== "" && el !== "\n")
+    .map((el) => el.replaceAll("*", ""));
+  newText.forEach((el, i) => {
     //question number
-    const index = parseInt(el) - 1;
+    const index = i;
 
     //answers
     obj[index] = {};
@@ -36,28 +40,39 @@ const obj = [];
     obj[index]["question"] = question;
 
     //get question answer
-    const answer = el.split("Правильна відповідь -- ")[1][0]
+    let answer;
+    if (el.includes("Правильна відповідь -- ")) {
+      answer = el.split("Правильна відповідь -- ")[1][0]
+    } else {
+      answer = el.split("Правильна відповідь: ")[1][0]
+    }
     obj[index]["answer"] = answer;
 
     //get description
-    const description = el.split("Правильна відповідь -- ")[1].split('\n').filter((el, i) => i !== 0).join("\n");
+    let separator
+    if (el.includes("Правильна відповідь -- ")) {
+      separator = "Правильна відповідь -- "
+    } else {
+      separator = "Правильна відповідь:"
+    }
+    const description = el.split(separator)[1].split('\n').filter((el, i) => i !== 0).join("\n");
     obj[index]["description"] = description;
 
     //changed
     let changed = null;
-    if (description.includes("зміна А")) {
+    if (description.includes("зміна А") || description.includes("Змінено А")) {
       changed = "зміна А"
     }
 
-    if (description.includes("зміна Б")) {
+    if (description.includes("зміна Б") || description.includes("Змінено Б")) {
       changed = "зміна Б"
     }
 
-    if (description.includes("зміна В")) {
+    if (description.includes("зміна В") || description.includes("Змінено В")) {
       changed = "зміна В"
     }
 
-    if (description.includes("зміна Г")) {
+    if (description.includes("зміна Г") || description.includes("Змінено Г")) {
       changed = "зміна Г"
     }
 
@@ -67,6 +82,10 @@ const obj = [];
 
 console.error(obj)
 
+function randomIntFromInterval(min, max) { // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
 function App() {
   const [isQuestion, setIsQuestion] = useState(true);
   const [question, setQuestion] = useState(null);
@@ -75,13 +94,19 @@ function App() {
     setQuestion(obj[0])
   }, [])
 
-  const onClick = () => {
+  const onClick = (isAnswerTrue) => {
     setIsQuestion(false)
   }
 
   const onNext = () => {
-    const index = obj.indexOf(question) + 1;
+    const index = randomIntFromInterval(0, obj.length -1)
     setQuestion(obj[index])
+    setIsQuestion(true)
+  }
+
+  const onSet = (i) => {
+    document.querySelector("#menu-toggle").checked = false
+    setQuestion(obj[i])
     setIsQuestion(true)
   }
 
@@ -90,10 +115,27 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="App pb-5">
+
+      <section className="top-nav">
+        <div>
+          Tests
+        </div>
+        <input id="menu-toggle" type="checkbox"/>
+        <label className='menu-button-container' htmlFor="menu-toggle">
+          <div className='menu-button'></div>
+        </label>
+        <ul className="menu">
+          {
+            obj.map((el, i) => (
+              <li><button className={"btn btn-primary w-100"} onClick={() => onSet(i)}>{i+1}</button></li>
+            ))
+          }
+        </ul>
+      </section>
       {isQuestion && question &&
         <>
-          <div className={"container mb-2 h1"}>
+          <div className={"container my-2 h1"}>
             Питання номер {obj.indexOf(question) + 1}
           </div>
           <div className={"container mb-2"}>
@@ -101,14 +143,14 @@ function App() {
           </div>
           <div className={"container d-flex flex-column"}>
             {question.answers.map((el, i) => (
-              <button type={"button"} key={i} onClick={onClick} className="btn btn-primary m-1">{el.letter}. {el.value}</button>
+              <button type={"button"} key={i} onClick={() => onClick(el.letter === el.answer)} className="btn btn-primary m-1">{el.letter}. {el.value}</button>
             ))}
           </div>
         </>
       }
       {!isQuestion &&
-      <div className={"container"}>
-        <div className={"h2 mb-2"}>
+      <div className={"container pb-5"}>
+        <div className={"h2 my-2"}>
           Відповідь:
         </div>
         <div className={"h5"}>
@@ -124,9 +166,13 @@ function App() {
         <div className={"mb-4"}>
           {question.description}
         </div>
-        <button type={"button"} className={"btn btn-secondary m-1"} onClick={onBack}>Назад</button>
-        <button type={"button"} className={"btn btn-secondary m-1"} onClick={onNext}>Наступне питання</button>
       </div>
+      }
+      {
+        <div className="footer d-flex position-fixed fixed-bottom bg-light justify-content-between">
+          <button disabled={isQuestion} type={"button"} className={"btn btn-primary m-1"} onClick={onBack}>До питання</button>
+          <button type={"button"} className={"btn btn-primary m-1"} onClick={onNext}>Інше питання</button>
+        </div>
       }
     </div>
   );
