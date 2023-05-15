@@ -63,6 +63,14 @@ html, body {
     height: 100%;
 }
 
+.footer {
+    padding-bottom: 50px;
+}
+
+.App {
+    padding-bottom: 150px !important;
+}
+
 * {
     font-family: "Raleway";
     box-sizing: border-box;
