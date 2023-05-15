@@ -80,12 +80,6 @@ const obj = [];
   })
 })()
 
-console.error(obj)
-
-function randomIntFromInterval(min, max) { // min and max included
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
 function App() {
   const [isQuestion, setIsQuestion] = useState(true);
   const [question, setQuestion] = useState(null);
@@ -99,7 +93,11 @@ function App() {
   }
 
   const onNext = () => {
-    const index = randomIntFromInterval(0, obj.length -1)
+    let index = obj.indexOf(question) + 1;
+    if (obj[index] === undefined) {
+      index = 0;
+    }
+
     setQuestion(obj[index])
     setIsQuestion(true)
   }
@@ -128,7 +126,7 @@ function App() {
         <ul className="menu">
           {
             obj.map((el, i) => (
-              <li><button className={"btn btn-primary w-100"} onClick={() => onSet(i)}>{i+1}</button></li>
+              <li key={i}><button className={"btn btn-primary w-100"} onClick={() => onSet(i)}>{i+1}</button></li>
             ))
           }
         </ul>
@@ -171,7 +169,7 @@ function App() {
       {
         <div className="footer d-flex position-fixed fixed-bottom bg-light justify-content-between">
           <button disabled={isQuestion} type={"button"} className={"btn btn-primary m-1"} onClick={onBack}>До питання</button>
-          <button type={"button"} className={"btn btn-primary m-1"} onClick={onNext}>Інше питання</button>
+          <button type={"button"} className={"btn btn-primary m-1"} onClick={onNext}>Наступне питання</button>
         </div>
       }
     </div>
